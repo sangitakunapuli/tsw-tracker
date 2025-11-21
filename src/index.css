@@ -1,0 +1,65 @@
+body {
+  background-image: url("/background.png"); /* put background.png in public/ */
+  background-size: 500px;
+  background-color: rgb(255, 227, 227);
+  background-blend-mode: lighten;
+  text-align: center;
+  font-family: "Umunu", sans-serif;
+}
+
+#title {
+  margin-top: 100px;
+  line-height: 10px;
+}
+
+#subtitle {
+  opacity: 0.7;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+#calendarContainer {
+  display: flex;
+  justify-content: end;
+}
+
+#calendarDiv {
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px 10px 20px 20px;
+  margin: auto;
+  align-content: center;
+  text-align: center;
+}
+
+#calendarHeading {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 10px 10px 0px 0px;
+  border: 2px solid black;
+  padding: 0px 20px;
+  font-size: 20px;
+  background-color: pink;
+  line-height: 0px;
+}
+
+#calendarContent {
+  padding: 20px;
+  border: 2px solid black;
+}
+
+.days {
+  display: flex;
+}
+
+.day {
+  width: 30px;
+  margin: 3px;
+  padding: 10px;
+  font-size: 15px;
+  text-align: center;
+  border-radius: 20px;
+}
+
+#resetButton {
+  margin-top: 20px;
+}
