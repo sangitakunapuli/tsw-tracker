@@ -1,16 +1,7 @@
-# React + Vite
+# TSW Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+One of the most frustrating conditions I have experienced thus far in my life has been TSW (Topical Steriod Withdrawal). You can read more about the condition here: https://www.itsan.org/us/what-is-tsw-syndrome/
 
-Currently, two official plugins are available:
+Since this condition is caused by prolonged usage of steriod creams, the skin barrier becomes compromised and extremely sensitive - reacting to many external factors that were previously fine. This condition takes months to years to finally improve, with possibility of relapse.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+This simple application aims to provide a calendar that serves as a daily log of symptoms and exposures. Hopefully this will serve as a starting point to establish a routine and identify triggers over time.
