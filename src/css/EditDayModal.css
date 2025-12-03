@@ -1,0 +1,37 @@
+.edm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.edm-modal {
+  background: #fff;
+  color: #111;
+  padding: 1rem;
+  border-radius: 8px;
+  min-width: 260px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.edm-modal h3 { margin: 0 0 8px; }
+
+.edm-form label { display: block; margin-bottom: 8px; }
+
+.edm-form select { display: block; width: 100%; margin-top: 6px; padding: 6px; }
+
+.edm-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; }
+
+.edm-btn { padding: 6px 10px; border-radius: 4px; border: none; cursor: pointer; }
+
+.edm-btn.primary { background: #007bff; color: #fff; }
+
+.edm-btn:not(.primary) { background: #eee; }
+
+/* small responsive tweak */
+@media (max-width: 420px) {
+  .edm-modal { width: 90%; min-width: 0; }
+}
