@@ -36,13 +36,26 @@ const months = [
 ];
 
 const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-const daysInThisMonth = daysInMonths[currentMonth];
+let daysInThisMonth = daysInMonths[currentMonth];
 
-// build 5x7 grid = 35 cells like your HTML
-const GRID_SIZE = 35;
-const gridDays = Array.from({ length: GRID_SIZE }, (_, idx) =>
-  idx < daysInThisMonth ? idx + 1 : null
-);
+// handle leap years
+if (currentMonth === 1 && ((currentYear % 4 === 0 && currentYear % 100 !== 0) || currentYear % 400 === 0)) {
+  daysInThisMonth = 29;
+}
+
+// get the day of week that the month starts on (0 = Sunday, 6 = Saturday)
+const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+
+// build calendar grid with proper alignment
+const gridDays = [];
+// add empty cells for days before the month starts
+for (let i = 0; i < firstDayOfMonth; i++) {
+  gridDays.push(null);
+}
+// add all days of the month
+for (let i = 1; i <= daysInThisMonth; i++) {
+  gridDays.push(i);
+}
 
 function App() {
   // habit title (click to change via prompt, like original)
@@ -132,6 +145,8 @@ function App() {
     rows.push(gridDays.slice(r * 7, r * 7 + 7));
   }
 
+  const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
   return (
     <>
       <h1 id="title">{months[currentMonth]}</h1>
@@ -150,6 +165,13 @@ function App() {
 
           <div id="calendarContent">
             <div id="tracker">
+              <div id="weekdaysHeader">
+                {weekdays.map((day) => (
+                  <div key={day} className="weekday">
+                    {day}
+                  </div>
+                ))}
+              </div>
               {rows.map((row, rowIndex) => (
                 <div className="days" key={rowIndex}>
                   {row.map((dayNumber, colIndex) => {
@@ -163,21 +185,19 @@ function App() {
 
                     const entry = entries[dayNumber - 1] || { pain: null };
                     const isToday = dayNumber === currentDate;
-
-                    const style = {
-                      backgroundColor: "white",
-                      border: isToday ? "2px solid black" : undefined,
-                      color: isToday ? "rgb(234, 1, 144)" : undefined,
-                      cursor:
-                        dayNumber <= currentDate ? "pointer" : "default",
-                      position: "relative",
-                    };
+                    const isDisabled = dayNumber > currentDate;
 
                     return (
                       <div
                         key={colIndex}
                         className="day"
-                        style={style}
+                        data-disabled={isDisabled}
+                        style={{
+                          ...(isToday && {
+                            border: "3px solid rgb(234, 1, 144)",
+                            background: "rgba(255, 192, 203, 0.2)",
+                          }),
+                        }}
                         onClick={() => handleDayClick(dayNumber)}
                       >
                         {dayNumber}
@@ -185,15 +205,7 @@ function App() {
                           <span
                             className="pain-badge"
                             style={{
-                              position: "absolute",
-                              right: "6px",
-                              bottom: "6px",
                               background: painColor(entry.pain),
-                              color: "#fff",
-                              borderRadius: "10px",
-                              padding: "2px 6px",
-                              fontSize: "0.75rem",
-                              fontWeight: 700,
                             }}
                           >
                             {entry.pain}

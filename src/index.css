@@ -1,76 +1,243 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-  background-image: url("/background.png"); /* put background.png in public/ */
+  background-image: url("/background.png");
   background-size: 500px;
   background-color: rgb(255, 227, 227);
   background-blend-mode: lighten;
-  text-align: center;
   font-family: "Umunu", sans-serif;
+  padding: 1rem;
 }
 
 #title {
-  margin-top: 100px;
-  line-height: 10px;
+  text-align: center;
+  margin: 2rem 0 0.5rem;
+  font-size: 2.5rem;
 }
 
 #subtitle {
+  text-align: center;
   opacity: 0.7;
-  font-size: 18px;
-  margin-bottom: 20px;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
 }
 
 #calendarContainer {
   display: flex;
-  justify-content: end;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+  padding: 1rem 0;
 }
 
 #calendarDiv {
   background-color: rgb(255, 255, 255);
-  border-radius: 10px 10px 20px 20px;
-  margin: auto;
-  align-content: center;
-  text-align: center;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 900px;
+  overflow: hidden;
 }
 
 #calendarHeading {
   display: flex;
   justify-content: space-between;
-  border-radius: 10px 10px 0px 0px;
-  border: 2px solid black;
-  padding: 0px 20px;
-  font-size: 20px;
-  background-color: pink;
-  line-height: 0px;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, #ffc0cb, #ffb6c1);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+#habitTitle {
+  font-size: 1.3rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+#habitTitle:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+#totalDays {
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 #calendarContent {
-  padding: 20px;
-  border: 2px solid black;
+  padding: 1.5rem;
+}
+
+#tracker {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.75rem;
+}
+
+#weekdaysHeader {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.weekday {
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #666;
+  padding: 0.5rem 0;
 }
 
 .days {
-  display: flex;
+  display: contents;
 }
 
 .day {
-  width: 30px;
-  margin: 3px;
-  padding: 10px;
-  font-size: 15px;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 600;
   text-align: center;
-  border-radius: 20px;
+  border-radius: 8px;
+  background: #f9f9f9;
+  border: 2px solid #e0e0e0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  min-height: 80px;
 }
 
-#resetButton {
-  margin-top: 20px;
+.day:hover:not([data-disabled="true"]) {
+  background: #fff;
+  border-color: #ff69b4;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.day[data-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #fafafa;
 }
 
 .pain-badge {
   position: absolute;
-  right: 6px;
-  bottom: 6px;
+  right: 8px;
+  bottom: 8px;
   color: #fff;
-  border-radius: 10px;
-  padding: 2px 6px;
-  font-size: 0.75rem;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: 700;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#resetButton {
+  display: block;
+  margin: 2rem auto;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background: #ff69b4;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#resetButton:hover {
+  background: #ff1493;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  #calendarDiv {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  #calendarHeading {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+
+  #habitTitle {
+    font-size: 1.1rem;
+  }
+
+  #tracker {
+    gap: 0.5rem;
+  }
+
+  .day {
+    min-height: 70px;
+    font-size: 1rem;
+  }
+
+  .pain-badge {
+    width: 28px;
+    height: 28px;
+    right: 6px;
+    bottom: 6px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 0.5rem;
+  }
+
+  #title {
+    font-size: 1.8rem;
+    margin: 1rem 0;
+  }
+
+  #subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  #calendarContent {
+    padding: 1rem;
+  }
+
+  #tracker {
+    gap: 0.4rem;
+  }
+
+  .day {
+    min-height: 60px;
+    font-size: 0.9rem;
+  }
+
+  .pain-badge {
+    width: 24px;
+    height: 24px;
+    right: 4px;
+    bottom: 4px;
+    font-size: 0.7rem;
+  }
 }
