@@ -25,11 +25,55 @@
 
 .edm-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; }
 
-.edm-btn { padding: 6px 10px; border-radius: 4px; border: none; cursor: pointer; }
+.edm-btn { padding: 6px 10px; border-radius: 4px; border: none; cursor: pointer; font-family: "Umunu", sans-serif; }
 
 .edm-btn.primary { background: #007bff; color: #fff; }
 
 .edm-btn:not(.primary) { background: #eee; }
+
+.triggers-section {
+  margin: 1rem 0;
+}
+
+.triggers-section h4 {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.triggers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 1rem;
+}
+
+.trigger-btn {
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 2px solid #ddd;
+  background: #fff;
+  color: #111;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  font-family: "Umunu", sans-serif;
+}
+
+.trigger-btn:hover {
+  border-color: #999;
+}
+
+.trigger-btn.selected {
+  background: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+.edm-form input[type="range"] {
+  width: 100%;
+  cursor: pointer;
+}
 
 /* small responsive tweak */
 @media (max-width: 420px) {

@@ -62,29 +62,29 @@ function App() {
   const [habitTitle, setHabitTitle] = useState("My New Habit");
 
   // initialize per-day entries from localStorage
-  // each entry is { pain: number | null }
+  // each entry is { itching, flakiness, redness, pain, oozing, dryness, triggers, averageScore }
   const [entries, setEntries] = useState(() => {
     const arr = [];
     for (let i = 1; i <= daysInThisMonth; i++) {
       const key = `${currentMonth + 1}-${i}-${currentYear}`;
       const stored = window.localStorage.getItem(key);
       if (stored === null) {
-        const init = { pain: null };
+        const init = { itching: null, flakiness: null, redness: null, pain: null, oozing: null, dryness: null, triggers: [], averageScore: null };
         window.localStorage.setItem(key, JSON.stringify(init));
         arr.push(init);
       } else {
         try {
           arr.push(JSON.parse(stored));
         } catch (e) {
-          // fallback if stored value was plain boolean
-          arr.push({ pain: null });
+          // fallback if stored value was invalid
+          arr.push({ itching: null, flakiness: null, redness: null, pain: null, oozing: null, dryness: null, triggers: [], averageScore: null });
         }
       }
     }
     return arr;
   });
 
-  const daysCompleted = entries.filter((e) => e && e.pain != null).length;
+  const daysCompleted = entries.filter((e) => e && e.averageScore != null).length;
 
   const handleHabitClick = () => {
     const result = window.prompt("What's your habit?", habitTitle);
@@ -106,11 +106,11 @@ function App() {
     setEditingDay(dayNumber);
   };
 
-  const saveDayData = (dayNumber, { pain }) => {
+  const saveDayData = (dayNumber, data) => {
     const index = dayNumber - 1;
     setEntries((prev) => {
       const next = [...prev];
-      next[index] = { pain: pain == null ? null : Number(pain) };
+      next[index] = data;
       const key = `${currentMonth + 1}-${dayNumber}-${currentYear}`;
       window.localStorage.setItem(key, JSON.stringify(next[index]));
       return next;
@@ -122,7 +122,7 @@ function App() {
     const index = dayNumber - 1;
     setEntries((prev) => {
       const next = [...prev];
-      next[index] = { pain: null };
+      next[index] = { itching: null, flakiness: null, redness: null, pain: null, oozing: null, dryness: null, triggers: [], averageScore: null };
       const key = `${currentMonth + 1}-${dayNumber}-${currentYear}`;
       window.localStorage.setItem(key, JSON.stringify(next[index]));
       return next;
@@ -131,10 +131,10 @@ function App() {
   };
 
   const handleReset = () => {
-    const next = Array.from({ length: daysInThisMonth }, () => ({ pain: null }));
+    const next = Array.from({ length: daysInThisMonth }, () => ({ itching: null, flakiness: null, redness: null, pain: null, oozing: null, dryness: null, triggers: [], averageScore: null }));
     for (let i = 1; i <= daysInThisMonth; i++) {
       const key = `${currentMonth + 1}-${i}-${currentYear}`;
-      window.localStorage.setItem(key, JSON.stringify({ pain: null }));
+      window.localStorage.setItem(key, JSON.stringify({ itching: null, flakiness: null, redness: null, pain: null, oozing: null, dryness: null, triggers: [], averageScore: null }));
     }
     setEntries(next);
   };
@@ -183,7 +183,7 @@ function App() {
                       );
                     }
 
-                    const entry = entries[dayNumber - 1] || { pain: null };
+                    const entry = entries[dayNumber - 1] || { averageScore: null };
                     const isToday = dayNumber === currentDate;
                     const isDisabled = dayNumber > currentDate;
 
@@ -201,14 +201,14 @@ function App() {
                         onClick={() => handleDayClick(dayNumber)}
                       >
                         {dayNumber}
-                        {entry && entry.pain != null && (
+                        {entry && entry.averageScore != null && (
                           <span
                             className="pain-badge"
                             style={{
-                              background: painColor(entry.pain),
+                              background: painColor(entry.averageScore),
                             }}
                           >
-                            {entry.pain}
+                            {Math.round(entry.averageScore)}
                           </span>
                         )}
                       </div>
