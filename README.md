@@ -7,8 +7,8 @@ Since this condition is caused by prolonged usage of steriod creams, the skin ba
 This simple application aims to provide a calendar that serves as a daily log of symptoms and exposures. Hopefully this will serve as a starting point to establish a routine and identify triggers over time.
 
 
-WIP:
-
+## WIP App Images (Demos coming soon)
 Currently only tracks pain on scale of 1-10 of the condition.
 <img width="1048" height="723" alt="Screenshot 2025-12-03 at 11 01 57 PM" src="https://github.com/user-attachments/assets/76df2eea-d6b9-48dc-b4b2-87ab937a5b26" />
 
+<img width="435" height="517" alt="Screenshot 2025-12-05 at 5 04 31 PM" src="https://github.com/user-attachments/assets/b02f3903-42cf-41c2-b608-62ab8ce06fef" />
