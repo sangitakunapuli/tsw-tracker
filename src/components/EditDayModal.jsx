@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../css/EditDayModal.css";
 
-function EditDayModal({ dayNumber, initial = { itching: null, flakiness: null, redness: null, pain: null, oozing: null, dryness: null, triggers: [], averageScore: null }, onClose, onSave, onClear }) {
+function EditDayModal({ dayNumber, initial = { itching: null, flakiness: null, redness: null, pain: null, oozing: null, dryness: null, triggers: [], averageScore: null, notes: "" }, onClose, onSave, onClear }) {
   const [symptoms, setSymptoms] = useState({
     itching: initial?.itching ?? "",
     flakiness: initial?.flakiness ?? "",
@@ -12,6 +12,7 @@ function EditDayModal({ dayNumber, initial = { itching: null, flakiness: null, r
   });
 
   const [selectedTriggers, setSelectedTriggers] = useState(initial?.triggers ?? []);
+  const [notes, setNotes] = useState(initial?.notes ?? "");
 
   const food_triggers = ["dairy", "gluten", "soy", "eggs", "nuts", "shellfish"];
   const environmental_triggers = ["pollen", "dust", "mold", "pet dander"];
@@ -30,7 +31,7 @@ function EditDayModal({ dayNumber, initial = { itching: null, flakiness: null, r
     const averageScore =
       Object.values(parsedSymptoms).filter((v) => v !== null).reduce((a, b) => a + b, 0) /
       Object.values(parsedSymptoms).filter((v) => v !== null).length;
-    onSave({ ...parsedSymptoms, triggers: selectedTriggers, averageScore });
+    onSave({ ...parsedSymptoms, triggers: selectedTriggers, notes, averageScore });
   };
 
   const handleSliderChange = (symptom, value) => {
@@ -85,6 +86,16 @@ function EditDayModal({ dayNumber, initial = { itching: null, flakiness: null, r
             </div>
           </div>
 
+          <div className="notes-section">
+            <label htmlFor="notes">Notes</label>
+            <textarea
+              id="notes"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Add any additional notes or observations..."
+            />
+          </div>
+
           <div className="edm-actions">
             <button type="button" className="edm-btn" onClick={onClose}>
               Cancel
@@ -95,6 +106,7 @@ function EditDayModal({ dayNumber, initial = { itching: null, flakiness: null, r
               onClick={() => {
                 setSymptoms({ itching: "", flakiness: "", redness: "", pain: "", oozing: "", dryness: "" });
                 setSelectedTriggers([]);
+                setNotes("");
                 onClear();
               }}
             >
