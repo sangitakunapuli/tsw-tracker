@@ -198,7 +198,7 @@ function App() {
 
   return (
     <>
-      <h1 id="title">{months[selectedMonth]} {selectedYear}</h1>
+      <h1 id="title">TSW Tracker</h1>
       <h2 id="subtitle">Continue on... you are a warrior.</h2>
 
       <div id="calendarContainer">
@@ -207,7 +207,7 @@ function App() {
 
           <div id="calendarHeading">
             <p id="habitTitle">
-              TSW Tracker
+              {months[selectedMonth]} {selectedYear}
             </p>
             <p id="totalDays">
               {daysCompleted}/{daysInThisMonth}
