@@ -170,6 +170,32 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+#monthNavigation {
+  display: flex !important;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+#monthNavigation button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background: #ff69b4;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: "Umunu", sans-serif;
+}
+
+#monthNavigation button:hover {
+  background: #ff1493;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   #calendarDiv {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./index.css";
 import EditDayModal from "./components/EditDayModal";
 import "./css/EditDayModal.css";
@@ -36,37 +36,42 @@ const months = [
 ];
 
 const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-let daysInThisMonth = daysInMonths[currentMonth];
 
-// handle leap years
-if (currentMonth === 1 && ((currentYear % 4 === 0 && currentYear % 100 !== 0) || currentYear % 400 === 0)) {
-  daysInThisMonth = 29;
-}
-
-// get the day of week that the month starts on (0 = Sunday, 6 = Saturday)
-const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
-
-// build calendar grid with proper alignment
-const gridDays = [];
-// add empty cells for days before the month starts
-for (let i = 0; i < firstDayOfMonth; i++) {
-  gridDays.push(null);
-}
-// add all days of the month
-for (let i = 1; i <= daysInThisMonth; i++) {
-  gridDays.push(i);
+function getDaysInMonth(month, year) {
+  if (month === 1 && ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0)) {
+    return 29; // leap year
+  }
+  return daysInMonths[month];
 }
 
 function App() {
-  // habit title (click to change via prompt, like original)
-  const [habitTitle, setHabitTitle] = useState("My New Habit");
+  // track selected month/year
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+  const [selectedYear, setSelectedYear] = useState(currentYear);
 
-  // initialize per-day entries from localStorage
+  // calculate days in selected month
+  const daysInThisMonth = getDaysInMonth(selectedMonth, selectedYear);
+
+  // get the day of week that the month starts on (0 = Sunday, 6 = Saturday)
+  const firstDayOfMonth = new Date(selectedYear, selectedMonth, 1).getDay();
+
+  // build calendar grid with proper alignment
+  const gridDays = [];
+  // add empty cells for days before the month starts
+  for (let i = 0; i < firstDayOfMonth; i++) {
+    gridDays.push(null);
+  }
+  // add all days of the month
+  for (let i = 1; i <= daysInThisMonth; i++) {
+    gridDays.push(i);
+  }
+
+  // initialize per-day entries from localStorage for selected month
   // each entry is { itching, flakiness, redness, pain, oozing, dryness, triggers, averageScore }
   const [entries, setEntries] = useState(() => {
     const arr = [];
     for (let i = 1; i <= daysInThisMonth; i++) {
-      const key = `${currentMonth + 1}-${i}-${currentYear}`;
+      const key = `${selectedMonth + 1}-${i}-${selectedYear}`;
       const stored = window.localStorage.getItem(key);
       if (stored === null) {
         const init = { itching: null, flakiness: null, redness: null, pain: null, oozing: null, dryness: null, triggers: [], averageScore: null };
@@ -86,23 +91,67 @@ function App() {
 
   const daysCompleted = entries.filter((e) => e && e.averageScore != null).length;
 
-  const handleHabitClick = () => {
-    const result = window.prompt("What's your habit?", habitTitle);
-    if (result === null) return; // user hit cancel
+  // reload entries when month/year changes
+  useEffect(() => {
+    const arr = [];
+    for (let i = 1; i <= daysInThisMonth; i++) {
+      const key = `${selectedMonth + 1}-${i}-${selectedYear}`;
+      const stored = window.localStorage.getItem(key);
+      if (stored === null) {
+        const init = { itching: null, flakiness: null, redness: null, pain: null, oozing: null, dryness: null, triggers: [], averageScore: null };
+        window.localStorage.setItem(key, JSON.stringify(init));
+        arr.push(init);
+      } else {
+        try {
+          arr.push(JSON.parse(stored));
+        } catch (e) {
+          // fallback if stored value was invalid
+          arr.push({ itching: null, flakiness: null, redness: null, pain: null, oozing: null, dryness: null, triggers: [], averageScore: null });
+        }
+      }
+    }
+    setEntries(arr);
+  }, [selectedMonth, selectedYear, daysInThisMonth]);
 
-    const trimmed = result.trim();
-    if (trimmed.length === 0) {
-      setHabitTitle("Click to set your habit");
+  const handlePrevMonth = () => {
+    if (selectedMonth === 0) {
+      setSelectedYear(selectedYear - 1);
+      setSelectedMonth(11);
     } else {
-      setHabitTitle(trimmed);
+      setSelectedMonth(selectedMonth - 1);
     }
   };
 
-  // open modal to edit the day's pain (only today or earlier)
+  const handleNextMonth = () => {
+    if (selectedMonth === 11) {
+      setSelectedYear(selectedYear + 1);
+      setSelectedMonth(0);
+    } else {
+      setSelectedMonth(selectedMonth + 1);
+    }
+  };
+
+  const handleToday = () => {
+    setSelectedMonth(currentMonth);
+    setSelectedYear(currentYear);
+  };
+
+
+  // open modal to edit the day (only today or earlier for current month)
   const [editingDay, setEditingDay] = useState(null);
 
   const handleDayClick = (dayNumber) => {
-    if (!dayNumber || dayNumber > currentDate) return;
+    // allow editing past months and current month up to today
+    // disable future months/dates
+    if (!dayNumber) return;
+    
+    // check if viewing a future month
+    if (selectedYear > currentYear) return;
+    if (selectedYear === currentYear && selectedMonth > currentMonth) return;
+    
+    // for current month, only allow up to today
+    if (selectedMonth === currentMonth && selectedYear === currentYear && dayNumber > currentDate) return;
+    
     setEditingDay(dayNumber);
   };
 
@@ -111,7 +160,7 @@ function App() {
     setEntries((prev) => {
       const next = [...prev];
       next[index] = data;
-      const key = `${currentMonth + 1}-${dayNumber}-${currentYear}`;
+      const key = `${selectedMonth + 1}-${dayNumber}-${selectedYear}`;
       window.localStorage.setItem(key, JSON.stringify(next[index]));
       return next;
     });
@@ -123,7 +172,7 @@ function App() {
     setEntries((prev) => {
       const next = [...prev];
       next[index] = { itching: null, flakiness: null, redness: null, pain: null, oozing: null, dryness: null, triggers: [], averageScore: null };
-      const key = `${currentMonth + 1}-${dayNumber}-${currentYear}`;
+      const key = `${selectedMonth + 1}-${dayNumber}-${selectedYear}`;
       window.localStorage.setItem(key, JSON.stringify(next[index]));
       return next;
     });
@@ -133,7 +182,7 @@ function App() {
   const handleReset = () => {
     const next = Array.from({ length: daysInThisMonth }, () => ({ itching: null, flakiness: null, redness: null, pain: null, oozing: null, dryness: null, triggers: [], averageScore: null }));
     for (let i = 1; i <= daysInThisMonth; i++) {
-      const key = `${currentMonth + 1}-${i}-${currentYear}`;
+      const key = `${selectedMonth + 1}-${i}-${selectedYear}`;
       window.localStorage.setItem(key, JSON.stringify({ itching: null, flakiness: null, redness: null, pain: null, oozing: null, dryness: null, triggers: [], averageScore: null }));
     }
     setEntries(next);
@@ -149,14 +198,16 @@ function App() {
 
   return (
     <>
-      <h1 id="title">{months[currentMonth]}</h1>
-      <h2 id="subtitle">Monthly Habit Tracker</h2>
+      <h1 id="title">{months[selectedMonth]} {selectedYear}</h1>
+      <h2 id="subtitle">Continue on... you are a warrior.</h2>
 
       <div id="calendarContainer">
         <div id="calendarDiv">
+          
+
           <div id="calendarHeading">
-            <p id="habitTitle" onClick={handleHabitClick}>
-              {habitTitle}
+            <p id="habitTitle">
+              TSW Tracker
             </p>
             <p id="totalDays">
               {daysCompleted}/{daysInThisMonth}
@@ -184,8 +235,11 @@ function App() {
                     }
 
                     const entry = entries[dayNumber - 1] || { averageScore: null };
-                    const isToday = dayNumber === currentDate;
-                    const isDisabled = dayNumber > currentDate;
+                    const isToday = selectedMonth === currentMonth && selectedYear === currentYear && dayNumber === currentDate;
+                    const isDisabled = 
+                      selectedYear > currentYear || 
+                      (selectedYear === currentYear && selectedMonth > currentMonth) ||
+                      (selectedMonth === currentMonth && selectedYear === currentYear && dayNumber > currentDate);
 
                     return (
                       <div
@@ -229,9 +283,14 @@ function App() {
           onClear={() => clearDayData(editingDay)}
         />
       )}
-      <button id="resetButton" onClick={handleReset}>
+      <div id="monthNavigation">
+            <button onClick={handlePrevMonth}>← Previous</button>
+            <button onClick={handleToday}>Today</button>
+            <button onClick={handleNextMonth}>Next →</button>
+          </div>
+      {/* <button id="resetButton" onClick={handleReset}>
         Reset Button
-      </button>
+      </button> */}
     </>
   );
 }
